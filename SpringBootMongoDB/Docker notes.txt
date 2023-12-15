@@ -1,0 +1,35 @@
+Notes for Docker 
+Running spring boot application with mongoDB on a docker.
+
+
+docker images
+docker pull mongo:latest
+docker build -t spring-mongo-app .  # this is spring boot application build
+docker images
+docker run -d -p 27017:27017 --name enggadda mongo:latest  #  running mongo
+docker ps
+docker run -p 9090:9090 --name spring-mongo-app --link enggadda:mongo(hostname and mongoDB name  in .yml file) -d spring-mongo-app:latest             # running the spring boot application and linking both the containers with each other.
+docker ps
+then try to check your api either they are working or not.
+
+
+
+application.yml content
+spring:
+  data:
+    mongodb:
+      host: enggadda
+      port: 27017
+      database: StudentDB
+
+	 
+application.properties
+server.port=9090
+
+
+Dockerfile content
+FROM openjdk:17
+EXPOSE 9090
+ADD target/springboot-mongo-docker.jar springboot-mongo-docker.jar
+ENTRYPOINT ["java","-jar","/springboot-mongo-docker.jar"]
+	 
